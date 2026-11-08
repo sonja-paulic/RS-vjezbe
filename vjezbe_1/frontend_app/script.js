@@ -1,33 +1,12 @@
-
-const events = [
-    {
-        title: "Web Development Workshop",
-        date: "15. studenoga 2026.",
-        location: "Zagreb",
-        description: "Nauči osnove modernog web razvoja kroz praktičnu radionicu."
-    },
-    {
-        title: "AI & Machine Learning",
-        date: "20. studenoga 2026.",
-        location: "Online",
-        description: "Upoznaj umjetnu inteligenciju i mogućnosti strojnog učenja."
-    },
-    {
-        title: "Cybersecurity Conference",
-        date: "28. studenoga 2026.",
-        location: "Split",
-        description: "Otkrij najnovije trendove u računalnoj sigurnosti."
-    }
-];
+const API_URL = "https://evently-backend-r4ix.onrender.com";
 
 const eventsContainer = document.getElementById("events");
 
-function displayEvents() {
+function displayEvents(events) {
     eventsContainer.innerHTML = "";
 
     events.forEach(event => {
         const card = document.createElement("div");
-
         card.classList.add("event-card");
 
         card.innerHTML = `
@@ -41,4 +20,21 @@ function displayEvents() {
     });
 }
 
-displayEvents();
+async function loadEvents() {
+    try {
+        const response = await fetch(`${API_URL}/events`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP greška: ${response.status}`);
+        }
+
+        const events = await response.json();
+        displayEvents(events);
+    } catch (error) {
+        eventsContainer.innerHTML =
+            "<p>Greška pri učitavanju događaja. Pokušaj ponovno.</p>";
+        console.error(error);
+    }
+}
+
+loadEvents();
